@@ -3,10 +3,10 @@
 }
 
 .about h1 {
-    font-size: calc(2rem + 1vw);
+    font-size: calc(2.5rem + 1vw);
     margin-bottom: 1rem;
 }
 
 .about p {
-    font-size: calc(2rem + 1vw);
+    font-size: calc(1.5rem + 1vw);
 }
