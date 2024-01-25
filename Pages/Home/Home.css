@@ -20,10 +20,6 @@
     font-size: 5rem;
 }
 
-.like-section__button {
-    font-size: 2rem;
-}
-
 @media screen and (orientation: portrait) {
     .home {
         align-items: flex-end;
