@@ -1,0 +1,12 @@
+.about {
+    width: 80%;
+}
+
+.about h1 {
+    font-size: calc(2rem + 1vw);
+    margin-bottom: 1rem;
+}
+
+.about p {
+    font-size: calc(1rem + 1vw);
+}

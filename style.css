@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat&display=swap');
+
+:root {
+  --background: #051707;
+  --primary: #83e594;
+  --secondary: #1c865e;
+  --accent: #4fdab6;
+  --text: #ddf8e1;
+}
+
+* {
+  font-family: 'Montserrat';
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--background);
+  color: var(--text)
+}
+
+#cover {
+  width: 100vw;
+  height: 100vh;
+  background-color: #0c3427;
+  position: fixed;
+  top: 20%;
+  opacity: 0;
+  pointer-events: none;
+  transition: 500ms ease;
+  z-index: 9999;
+}
+
+#cover.active {
+  top: 0%;
+  opacity: 1;
+}
+
+.button-primary {
+  background-color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: none;
+}
+
+#manager {
+  display: grid;
+  place-items: center;
+}
+
+#navigation {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media screen and (orientation: portrait) {
+  #navigation {
+    width: 100%;
+    justify-content: space-evenly;
+    top: 90%;
+  }
+}
