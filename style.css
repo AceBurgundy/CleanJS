@@ -68,4 +68,7 @@ body {
     justify-content: space-evenly;
     top: 90%;
   }
+  .button-primary {
+    font-size: 2rem;
+  }
 }
