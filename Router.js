@@ -19,11 +19,7 @@ export default class Router extends Component {
 
     const transition = page => {
       const manager = document.getElementById(managerId);
-      toggleCover()
-      setTimeout(() => {
-        manager.innerHTML = new pages[page]()
-        toggleCover();
-      }, 500);
+      manager.innerHTML = new pages[page]()
     };
 
     this.loadScripts(() => {
