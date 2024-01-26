@@ -13,10 +13,6 @@ export default class Router extends Component {
       About
     }
 
-    const toggleCover = () => {
-      cover.classList.toggle('active')
-    }
-
     const transition = page => {
       const manager = document.getElementById(managerId);
       manager.innerHTML = new pages[page]()
@@ -42,7 +38,6 @@ export default class Router extends Component {
           }).join('')
         }
       </nav>
-      <section id="cover"></section>
       <section id="${managerId}" style="height: 100%;"></section>
     `);
   }

@@ -22,23 +22,6 @@ body {
   color: var(--text)
 }
 
-#cover {
-  width: 100vw;
-  height: 100vh;
-  background-color: #0c3427;
-  position: fixed;
-  top: 20%;
-  opacity: 0;
-  pointer-events: none;
-  transition: 500ms ease;
-  z-index: 9999;
-}
-
-#cover.active {
-  top: 0%;
-  opacity: 1;
-}
-
 .button-primary {
   background-color: var(--primary);
   padding: 0.5rem 1rem;
