@@ -4,8 +4,8 @@ export default class About extends Component {
   constructor() {
     super();
 
-    this.loadCSS([
-      "./Pages/About/About.css"
+    this.loadCSS(import.meta, [
+      "./Styles/About.css"
     ])
 
     this.render(/* html */`

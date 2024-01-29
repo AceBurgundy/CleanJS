@@ -7,8 +7,8 @@ export default class Home extends Component {
     const likeCounter = "like-counter";
     const likeButton = "like-button";
 
-    this.loadCSS([
-      "./Pages/Home/Home.css"
+    this.loadCSS(import.meta, [
+      "./Styles/Home.css"
     ])
 
     this.loadScripts(() => {
