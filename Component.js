@@ -1,17 +1,28 @@
 /**
- * Represents a component with the ability to load scripts and attach CSS files.
- * @class
+ * Returns the full path from the template file to where a function was called;
+ * @param {'import.meta'} importMeta - the import.meta of a function. Simply pass `import.meta`
+ * @throws {Error} if importMeta is null
+ * @return {string} the full path
  */
+export const getFullPath = (importMeta) => {
+  if (!importMeta) {
+    throw new Error('Missing import.meta. Simply pass `import.meta` as the argument');
+  }
+
+  const scriptSrc = new URL(importMeta.url).pathname;
+  return scriptSrc.startsWith("/") ? scriptSrc.slice(1) : scriptSrc;
+};
+
 export default class Component {
   constructor() {
-    let scripts;
+    const _cssPromises = [];
     let _template;
-    let cssPromises = [];
+    let _scripts;
 
     const shouldNotAttachToWindow = [
       'It is not recommended to attach events to the window element.',
       'Add an id, and attach the event to the id instead.'
-    ].join(' ')
+    ].join(' ');
 
     /**
      * Warns if any events are attached to the window
@@ -27,7 +38,7 @@ export default class Component {
       ]
 
       const attachedToWindow = discouragedWindowEvents.some(eventType => {
-        return scripts.toString().trim().toLowerCase().includes(eventType)
+        return _scripts.toString().trim().toLowerCase().includes(eventType)
       })
 
       if (attachedToWindow) {
@@ -36,99 +47,117 @@ export default class Component {
     }
 
     /**
-     * Returns the full path of a script from the html file
-     * @param {'import.meta'} importMeta - Exposes context-specific metadata to a module.
-     * It contains information about the module, such as the module's URL. Simply pass ```import.meta``` as an argument
-     * @returns {string} the import.meta script src or an empty string
-     */
-    this.getFullPath = importMeta => {
-      const scriptSrc = new URL(importMeta.url).pathname;
-      return scriptSrc.startsWith('/') ? scriptSrc.slice(1) : scriptSrc;
-    }
-
-    /**
-     * Load scripts based on the provided callback function.
-     * @param {Function} scriptArgument - Callback function for loading scripts.
-     */
-    this.scripts = (scriptArgument) => {
-      if (!scriptArgument) throw new Error('Missing callback argument for loadScripts');
-      scripts = scriptArgument;
-      warnScriptsAttachedToWindow();
-    }
-
-    /**
      * Load CSS files based on the provided paths.
-     * @param {string[]} cssPaths - List of CSS paths to be loaded.
+     * @param {'import.meta'} importMeta - the import.meta of a function. Simply pass `import.meta`
+     * @throws {Error} if importMeta is null
+     * @param {string[]} cssPaths - list of CSS paths to be loaded.
      */
     this.css = (importMeta, cssPaths) => {
-      cssPaths.forEach(cssPath => {
-        let pathToScript = this.getFullPath(importMeta);
+      let scriptPath = getFullPath(importMeta);
 
-        const scriptFileName = pathToScript.split('/').pop();
-        pathToScript = pathToScript.replace(scriptFileName, '');
+      const scriptFileName = scriptPath.split("/").pop();
+      scriptPath = scriptPath.replace(scriptFileName, "");
 
-        if (cssPath.startsWith('/')) {
-          cssPath = pathToScript + cssPath;
+      if (!cssPaths) {
+        console.error(`List of css paths is empty from ${scriptFileName}`);
+        return;
+      }
+
+      cssPaths.forEach((cssPath) => {
+        if (cssPath.startsWith("/")) {
+          cssPath = scriptPath + cssPath;
         }
 
-        else if (!cssPath.includes('/')) {
-          cssPath = pathToScript + '/' + cssPath;
+        else if (!cssPath.includes("/")) {
+          cssPath = scriptPath + "/" + cssPath;
         }
 
-        else if (cssPath.startsWith('./')) {
+        else if (cssPath.startsWith("./")) {
           cssPath = cssPath.slice(2);
-          cssPath = pathToScript + cssPath;
+          cssPath = scriptPath + cssPath;
         }
 
-        const cssAlreadyLinked = document.querySelector(`link[href='${cssPath}']`);
+        const cssAlreadyLinked = document.querySelector(
+          `link[href='${cssPath}']`
+        );
 
         if (cssAlreadyLinked) {
           return;
         }
 
         const cssPromise = new Promise((resolve, reject) => {
-          const styleLink = document.createElement('link');
-          styleLink.rel = 'stylesheet';
+          const styleLink = document.createElement("link");
+          styleLink.rel = "stylesheet";
           styleLink.href = cssPath;
           styleLink.onload = () => resolve();
           styleLink.onerror = () => reject();
           document.head.appendChild(styleLink);
         });
 
-        cssPromises.push(cssPromise);
+        _cssPromises.push(cssPromise);
       });
     }
 
-    this.template = template => {
-      if (!template) {
+    /**
+     * Sets the script for the template code
+     *
+     * @throws {Error} if script argument is null
+     * @throws {Error} if script argument is not a function
+     */
+    this.scripts = script => {
+      if (!script) {
+        throw new Error('Setting scripts with a missing argument')
+      };
+
+      if (typeof script !== 'function') {
+        throw new Error('Script argument must be a function or a callback function')
+      };
+
+      _scripts = script;
+      warnScriptsAttachedToWindow();
+    }
+
+    /**
+     * Sets the template for the template
+     *
+     * @throws {Error} if template is null
+     * @throws {Error} if template is not a string
+     * @throws {Error} if template is an empty string
+     */
+    this.template = html => {
+      if (!html) {
         throw new Error('Template is required for a component');
       }
 
-      if (typeof template !== 'string') {
+      if (typeof html !== 'string') {
         throw new Error('Template must be a string');
       }
 
-      if (template === '') {
+      if (html === '') {
         throw new Error('Template is required for a component');
       }
 
-      _template = template;
+      _template = html;
     }
 
     /**
      * Render the template.
      * @param {string} template - The template to be rendered.
+     * @throws {Error} if element to render to is null
      */
     this.render = element => {
-      Promise.all(cssPromises)
-          .then(() => {
-            console.log('called');
-            element.innerHTML = _template;
-            scripts();
-          })
-          .catch(error =>
-              console.error('Failed to load css: ', error)
-            )
+      if (!element) {
+        throw new Error('Element is required to render the template to');
+      }
+
+      Promise.all(_cssPromises)
+        .then(() => {
+          element.innerHTML = _template;
+          if (_scripts) _scripts();
+        })
+        .catch(error =>
+          console.error('Failed to load css: ', error)
+        )
     }
   }
 }
