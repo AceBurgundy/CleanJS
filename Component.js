@@ -6,6 +6,7 @@ export default class Component {
   constructor() {
     let scripts;
     let _template;
+    let cssPromises = [];
 
     const shouldNotAttachToWindow = [
       'It is not recommended to attach events to the window element.',
@@ -40,7 +41,7 @@ export default class Component {
      * It contains information about the module, such as the module's URL. Simply pass ```import.meta``` as an argument
      * @returns {string} the import.meta script src or an empty string
      */
-    const getFullPath = importMeta => {
+    this.getFullPath = importMeta => {
       const scriptSrc = new URL(importMeta.url).pathname;
       return scriptSrc.startsWith('/') ? scriptSrc.slice(1) : scriptSrc;
     }
@@ -49,7 +50,7 @@ export default class Component {
      * Load scripts based on the provided callback function.
      * @param {Function} scriptArgument - Callback function for loading scripts.
      */
-    this.loadScripts = (scriptArgument) => {
+    this.scripts = (scriptArgument) => {
       if (!scriptArgument) throw new Error('Missing callback argument for loadScripts');
       scripts = scriptArgument;
       warnScriptsAttachedToWindow();
@@ -59,9 +60,9 @@ export default class Component {
      * Load CSS files based on the provided paths.
      * @param {string[]} cssPaths - List of CSS paths to be loaded.
      */
-    this.loadCSS = (importMeta, cssPaths) => {
+    this.css = (importMeta, cssPaths) => {
       cssPaths.forEach(cssPath => {
-        let pathToScript = getFullPath(importMeta);
+        let pathToScript = this.getFullPath(importMeta);
 
         const scriptFileName = pathToScript.split('/').pop();
         pathToScript = pathToScript.replace(scriptFileName, '');
@@ -82,35 +83,52 @@ export default class Component {
         const cssAlreadyLinked = document.querySelector(`link[href='${cssPath}']`);
 
         if (cssAlreadyLinked) {
-          console.warn(`CSS file already exists for path: ${cssPath}`);
           return;
         }
 
-        const styleLink = document.createElement('link');
-        styleLink.rel = 'stylesheet';
-        styleLink.href = cssPath;
-        document.head.appendChild(styleLink);
+        const cssPromise = new Promise((resolve, reject) => {
+          const styleLink = document.createElement('link');
+          styleLink.rel = 'stylesheet';
+          styleLink.href = cssPath;
+          styleLink.onload = () => resolve();
+          styleLink.onerror = () => reject();
+          document.head.appendChild(styleLink);
+        });
+
+        cssPromises.push(cssPromise);
       });
+    }
+
+    this.template = template => {
+      if (!template) {
+        throw new Error('Template is required for a component');
+      }
+
+      if (typeof template !== 'string') {
+        throw new Error('Template must be a string');
+      }
+
+      if (template === '') {
+        throw new Error('Template is required for a component');
+      }
+
+      _template = template;
     }
 
     /**
      * Render the template.
      * @param {string} template - The template to be rendered.
      */
-    this.render = template => {
-      if (!template || template.trim() === '') {
-        throw new Error('Template is missing');
-      }
-
-      _template = template;
-
-      if (scripts) {
-        setTimeout(scripts, 0)
-      };
-
-      this.toString();
+    this.render = element => {
+      Promise.all(cssPromises)
+          .then(() => {
+            console.log('called');
+            element.innerHTML = _template;
+            scripts();
+          })
+          .catch(error =>
+              console.error('Failed to load css: ', error)
+            )
     }
-
-    this.toString = () => _template;
   }
 }

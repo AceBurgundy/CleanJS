@@ -26,8 +26,6 @@ export default class Router extends Component {
           transition(item.textContent);
         }
       })
-
-      transition('Home')
     });
 
     this.render(/* html */`
@@ -38,7 +36,9 @@ export default class Router extends Component {
           }).join('')
         }
       </nav>
-      <section id="${managerId}" style="height: 100%;"></section>
+      <section id="${managerId}" style="height: 100%;">
+        ${new pages.Home()}
+      </section>
     `);
   }
 }
