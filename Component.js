@@ -6,11 +6,51 @@
  */
 export const getFullPath = (importMeta) => {
   if (!importMeta) {
-    throw new Error('Missing import.meta. Simply pass `import.meta` as the argument');
+    throw new Error(
+      "Missing import.meta. Simply pass `import.meta` as the argument"
+    );
   }
 
   const scriptSrc = new URL(importMeta.url).pathname;
   return scriptSrc.startsWith("/") ? scriptSrc.slice(1) : scriptSrc;
+};
+
+/**
+ * Load CSS files based on the provided paths.
+ * @param {string[]} cssPaths - List of CSS paths to be loaded.
+ **/
+export const css = (importMeta, cssPaths) => {
+  cssPaths.forEach((cssPath) => {
+    let pathToScript = getFullPath(importMeta);
+    const scriptFileName = pathToScript.split("/").pop();
+    pathToScript = pathToScript.replace(scriptFileName, "");
+
+    if (cssPath.startsWith("/")) {
+      cssPath = pathToScript + cssPath;
+    }
+
+    else if (!cssPath.includes("/")) {
+      cssPath = pathToScript + "/" + cssPath;
+    }
+
+    else if (cssPath.startsWith("./")) {
+      cssPath = cssPath.slice(2);
+      cssPath = pathToScript + cssPath;
+    }
+
+    const cssAlreadyLinked = document.querySelector(`link[href='${cssPath}']`);
+
+    if (cssAlreadyLinked) {
+      console.warn(`CSS file already exists for path: ${cssPath}`);
+      return;
+    }
+
+    const styleLink = document.createElement("link");
+    styleLink.rel = "stylesheet";
+    styleLink.href = cssPath;
+
+    document.head.appendChild(styleLink);
+  });
 };
 
 export default class Component {
@@ -19,9 +59,9 @@ export default class Component {
     this.scripts;
 
     const shouldNotAttachToWindow = [
-      'It is not recommended to attach events to the window element.',
-      'Add an id, and attach the event to the id instead.'
-    ].join(' ');
+      "It is not recommended to attach events to the window element.",
+      "Add an id, and attach the event to the id instead.",
+    ].join(" ");
 
     /**
      * Warns if any events are attached to the window
@@ -31,19 +71,16 @@ export default class Component {
      * is attached to the window would cause unexpected behaviour if the same listener has been reattached again.
      */
     const warnScriptsAttachedToWindow = () => {
-      const discouragedWindowEvents = [
-        'window.on',
-        'window.addeventlistener'
-      ]
+      const discouragedWindowEvents = ["window.on", "window.addeventlistener"];
 
-      const attachedToWindow = discouragedWindowEvents.some(eventType => {
-        return this.scripts.toString().trim().toLowerCase().includes(eventType)
-      })
+      const attachedToWindow = discouragedWindowEvents.some((eventType) => {
+        return this.scripts.toString().trim().toLowerCase().includes(eventType);
+      });
 
       if (attachedToWindow) {
-        console.warn(shouldNotAttachToWindow)
+        console.warn(shouldNotAttachToWindow);
       }
-    }
+    };
 
     /**
      * Sets the template for the template
@@ -54,12 +91,12 @@ export default class Component {
      * @throws {Error} if scripts is not a callback function
      */
     const validate = () => {
-      if (typeof this.template !== 'string') {
-        throw new Error('Template must be a string');
+      if (typeof this.template !== "string") {
+        throw new Error("Template must be a string");
       }
 
-      if (this.template === '') {
-        throw new Error('Template is required for a component');
+      if (this.template === "") {
+        throw new Error("Template is required for a component");
       }
 
       if (!this.scripts) {
@@ -68,10 +105,12 @@ export default class Component {
 
       warnScriptsAttachedToWindow();
 
-      if (typeof this.scripts !== 'function') {
-        throw new Error('Script argument must be a function or a callback function')
-      };
-    }
+      if (typeof this.scripts !== "function") {
+        throw new Error(
+          "Script argument must be a function or a callback function"
+        );
+      }
+    };
 
     /**
      * Render the template.
@@ -85,7 +124,7 @@ export default class Component {
         if (this.scripts) this.scripts();
       }, 0);
 
-      return this.template
+      return this.template;
     };
   }
 
