@@ -15,25 +15,23 @@ export const getFullPath = (importMeta) => {
   return scriptSrc.startsWith("/") ? scriptSrc.slice(1) : scriptSrc;
 };
 
+export const uniqueId = () => Math.random().toString(36).substring(2, 10);
+
 /**
  * Load CSS files based on the provided paths.
  * @param {string[]} cssPaths - List of CSS paths to be loaded.
  **/
-export const css = (importMeta, cssPaths) => {
-  cssPaths.forEach(cssPath => {
+export const css = (importMeta, cssPaths) =>
+  cssPaths.forEach((cssPath) => {
     let pathToScript = getFullPath(importMeta);
     const scriptFileName = pathToScript.split("/").pop();
     pathToScript = pathToScript.replace(scriptFileName, "");
 
     if (cssPath.startsWith("/")) {
       cssPath = pathToScript + cssPath;
-    }
-
-    else if (!cssPath.includes("/")) {
+    } else if (!cssPath.includes("/")) {
       cssPath = pathToScript + "/" + cssPath;
-    }
-
-    else if (cssPath.startsWith("./")) {
+    } else if (cssPath.startsWith("./")) {
       cssPath = cssPath.slice(2);
       cssPath = pathToScript + cssPath;
     }
@@ -51,80 +49,90 @@ export const css = (importMeta, cssPaths) => {
 
     document.head.appendChild(styleLink);
   });
-};
 
 export default class Component {
   constructor() {
-    this.template;
-    this.scripts;
-
-    const shouldNotAttachToWindow = [
-      "It is not recommended to attach events to the window element.",
-      "Add an id, and attach the event to the id instead.",
-    ].join(" ");
+    this.template = "";
+    this.scripts = null;
+    this.states = {};
+    this._stateElements  = {};
 
     /**
-     * Warns if any events are attached to the window
-     *
-     * This is because the Component removes the event just as how javascript
-     * removes events after an element has been removed. Thats why removing an element where the script
-     * is attached to the window would cause unexpected behaviour if the same listener has been reattached again.
-     */
-    const warnScriptsAttachedToWindow = () => {
-      const discouragedWindowEvents = ["window.on", "window.addeventlistener"];
-
-      const attachedToWindow = discouragedWindowEvents.some((eventType) => {
-        return this.scripts.toString().trim().toLowerCase().includes(eventType);
-      });
-
-      if (attachedToWindow) {
-        console.warn(shouldNotAttachToWindow);
-      }
-    };
-
-    /**
-     * Sets the template for the template
-     *
-     * @throws {Error} if template is null
-     * @throws {Error} if template is not a string
-     * @throws {Error} if template is an empty string
-     * @throws {Error} if scripts is not a callback function
+     * Helper function to validate the template and scripts.
      */
     const validate = () => {
       if (typeof this.template !== "string") {
         throw new Error("Template must be a string");
       }
 
-      if (this.template === "") {
+      if (!this.template) {
         throw new Error("Template is required for a component");
       }
 
-      if (!this.scripts) {
-        return;
-      }
-
-      warnScriptsAttachedToWindow();
-
-      if (typeof this.scripts !== "function") {
-        throw new Error(
-          "Script argument must be a function or a callback function"
-        );
+      if (this.scripts && typeof this.scripts !== "function") {
+        throw new Error("Scripts must be a function");
       }
     };
 
     /**
-     * Render the template.
-     * @param {HTMLAllCollection} element - the element where the template will be rendered.
-     * @throws {Error} if element to render to is null
+     * Function to manage state and return a state value with a setter.
+     * @param {any} initialValue - Initial state value.
+     * @param {string} uniqueElementId - The uniqueElementId for the element tied to this state.
+     * @returns {[any, function]} Current state and a setter function to update the state.
+     */
+    this.state = (initialValue, uniqueElementId) => {
+      let value = initialValue;
+
+      // Setter function to update the value and DOM
+      const setValue = newValue => {
+
+        value = newValue;
+
+        /**
+         * @type {HTMLElement}
+         */
+        const element = this._stateElements[uniqueElementId];
+
+        if (!element) {
+          return;
+        }
+
+        element.textContent = value;
+      };
+
+      // Save the initial value and element uniqueElementId
+      this.states[uniqueElementId] = value;
+
+      // To be used later to track elements associated with the state
+      return [value, setValue];
+    };
+
+    /**
+     * Called after rendering to bind elements to states.
+     */
+    const bindStateElements = () => {
+      Object.keys(this.states).forEach(uniqueElementId => {
+        this._stateElements[uniqueElementId] = document.getElementById(uniqueElementId);
+
+        if (!this._stateElements[uniqueElementId]) {
+          console.warn(`No element found with unique element id: ${uniqueElementId}`);
+        }
+      });
+    };
+
+    /**
+     * Render the template and bind event listeners.
      */
     this.render = () => {
       validate();
 
+      // Append the root element to the DOM
       setTimeout(() => {
-        if (this.scripts) this.scripts();
+        bindStateElements(); // Bind state elements after rendering
+        if (this.scripts) this.scripts(); // Execute scripts (event listeners etc.)
       }, 0);
 
-      return this.template;
+      return this.template; // Return the rendered template
     };
   }
 
