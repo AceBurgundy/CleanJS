@@ -32,7 +32,7 @@ export default class Router extends Component {
       <nav id="navigation">
         ${
           Object.keys(pages).map(page => {
-            return `<button class='nav-item button-primary'>${page}</button>`;
+            return /* html */`<button class='nav-item button-primary'>${page}</button>`;
           }).join('')
         }
       </nav>

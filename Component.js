@@ -20,7 +20,7 @@ export const getFullPath = (importMeta) => {
  * @param {string[]} cssPaths - List of CSS paths to be loaded.
  **/
 export const css = (importMeta, cssPaths) => {
-  cssPaths.forEach((cssPath) => {
+  cssPaths.forEach(cssPath => {
     let pathToScript = getFullPath(importMeta);
     const scriptFileName = pathToScript.split("/").pop();
     pathToScript = pathToScript.replace(scriptFileName, "");
