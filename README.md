@@ -14,6 +14,9 @@ For a more enjoyable development experience in VS Code, install the "Inline HTML
 * **CSS Management:** Utilize the `css` helper function to load CSS files associated with your components. This ensures a clean and organized stylesheet strategy.
 * **Navigation:** Implement navigation between components using the `Redirect` class. It provides a clear way to define links that update the URL and render the corresponding component.
 
+### Warning
+
+* **Overriden CSS:** The css function simply loads css files to the head to group related css and component together. It doesn't handle cases where some styles with duplicate selectors will be overriden if used improperly. This doesn't work like modules.css
 ### Benefits
 
 * **Simplified SPA Development:** Lite SPA JS removes the need for complex boilerplate code, allowing you to focus on building the core functionalities of your application.
