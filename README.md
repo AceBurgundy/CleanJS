@@ -26,12 +26,16 @@ For a more enjoyable development experience in VS Code, install the "Inline HTML
 
 While not strictly necessary, you can install Lite SPA JS locally for development purposes. However, you can also directly include the library script in your HTML.
 
-**2. Include the Script:**
+**2. Include a Script:**
 
-Add the script file (`Component.js`) containing the core library functions to your HTML file:
+Calling new Root(destination: <Component>) will render that component to the screen:
 
-```html
-<script src="./path/to/Component.js" type="module"></script>
+```javascript
+import { Root } from '../Component.js';
+import { Home } from './pages/home/Home.js';
+
+// Renders the Component Home() to the window
+new Root({destination: Home}).render();
 ```
 
 **3. Create Components:**
