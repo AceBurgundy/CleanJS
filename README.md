@@ -32,7 +32,8 @@ import Component from "./Component.js";
 export default class Home extends Component {
   constructor() {
     super();
-    this.template = `
+
+    this.template = /* html */`
       <h1>Welcome to the Home Page!</h1>
       <p>This is the content of the Home page.</p>
     `;
@@ -50,7 +51,7 @@ import Home from "./Pages/Home/Home.js";
 export default class Router extends Component {
   constructor() {
     super();
-    this.template = `
+    this.template = /* html */`
       <nav id="navigation">
         ${new Redirect({
           destination: About,
