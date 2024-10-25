@@ -1,4 +1,4 @@
-## Lite-SPA-JS: A Simple SPA Framework for Small Projects (Built on free time)
+## Lite-SPA-JS: A Simple SPA Framework for Small Projects (Built For Fun)
 
 **Lite-SPA-JS** is a lightweight JavaScript library designed to simplify creating single-page applications (SPAs) for small projects. It avoids complex boilerplate code, making it easy to get started with basic navigation and component management.
 
