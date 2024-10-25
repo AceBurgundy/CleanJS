@@ -79,6 +79,8 @@ const aboutPageLink = new Redirect({
   attributes: {"class": "nav-item button-primary"},
   innerHTML: "About"
 });
+
+/// Will render an achor tag when added to this.template of a component.
 ```
 
 **6. State Management:**
