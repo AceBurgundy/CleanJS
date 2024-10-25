@@ -12,7 +12,7 @@
 
 1. **Installation:**  
    Download the Lite-SPA-JS library and include it in your project or install it using a package manager (not yet available for package managers).
-   Install Inline HTML VsCode package to make it pleasing to code html in a JS string.
+   - Install Inline HTML VsCode package to make it pleasing to code html in a JS string.
 
 3. **Create Components:**  
    Define your application's components by extending the `Component` class. Each component should have a template string and optionally, script logic for event handling.  
