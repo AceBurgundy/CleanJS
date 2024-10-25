@@ -31,7 +31,7 @@ export class Home extends Component {
         }
       </nav>
       <div class="home">
-        <h1 class="title">ShockJS</h1>
+        <h1 class="title">Lite SPA JS</h1>
         <div class="like-section">
           <div class="like-section__counter" id="${counterId}">${count}</div>
           <button id="${likeButton}" class="button-primary like-section__button">Like</button>
