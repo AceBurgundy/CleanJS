@@ -67,7 +67,7 @@ export class MyComponent extends Component {
 
 **4. Render the Application:**
 
-Use the `Root` class to inside your `script.js` to render your initial component:
+Use the `Root` class inside your `script.js` to render your initial component:
 
 ```javascript
 import { Root } from './path/to/Component.js';
