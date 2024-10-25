@@ -7,7 +7,6 @@
 * **Simple Routing:** Navigate between different parts of your application using anchor tags and the `Redirect` component.
 * **Component Based:** Define reusable components with templates and optional scripts for event handling.
 * **State Management:** Manage state within components and update the DOM automatically.
-* **Back/Forward Buttons:** Utilize browser history to simulate back/forward navigation using the `window.onpopstate` event.
 
 ### Getting Started
 
