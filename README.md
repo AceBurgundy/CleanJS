@@ -12,14 +12,15 @@
 
 1. **Installation:**  
    Download the Lite-SPA-JS library and include it in your project or install it using a package manager (not yet available for package managers).
+   Install Inline HTML VsCode package to make it pleasing to code html in a JS string.
 
-2. **Create Components:**  
+3. **Create Components:**  
    Define your application's components by extending the `Component` class. Each component should have a template string and optionally, script logic for event handling.  
 
-3. **Define Routes:**  
+4. **Define Routes:**  
    Use the `Redirect` component within your main component's template to define navigation links for each page/component.
 
-4. **Render the Application:**  
+5. **Render the Application:**  
    Import your main component and use the `Root` component to render it as the initial view.
 
 ### Example Usage
