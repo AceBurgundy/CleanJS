@@ -1,4 +1,4 @@
-import Component, { css, uniqueId } from "../../Component.js"
+import Component, { css } from "../../Component.js"
 
 css(import.meta, [
   "./styles/Home.css"
@@ -9,9 +9,7 @@ export default class Home extends Component {
     super();
 
     const likeButton = "like-button";
-    const counterId = uniqueId();
-
-    let [count, setCount] = this.state(0, counterId);
+    let [counterId, count, setCount] = this.state(0, "like-section__counter");
 
     this.scripts = () => {
       document.getElementById(likeButton).onclick = () => {

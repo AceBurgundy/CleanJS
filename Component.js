@@ -15,26 +15,21 @@ export const getFullPath = (importMeta) => {
   return scriptSrc.startsWith("/") ? scriptSrc.slice(1) : scriptSrc;
 };
 
-export const uniqueId = () => Math.random().toString(36).substring(2, 10);
+const uniqueId = () => Math.random().toString(36).substring(2, 10);
 
 /**
  * Load CSS files based on the provided paths.
  * @param {string[]} cssPaths - List of CSS paths to be loaded.
  **/
 export const css = (importMeta, cssPaths) =>
-  cssPaths.forEach((cssPath) => {
+  cssPaths.forEach(cssPath => {
     let pathToScript = getFullPath(importMeta);
     const scriptFileName = pathToScript.split("/").pop();
     pathToScript = pathToScript.replace(scriptFileName, "");
 
-    if (cssPath.startsWith("/")) {
-      cssPath = pathToScript + cssPath;
-    } else if (!cssPath.includes("/")) {
-      cssPath = pathToScript + "/" + cssPath;
-    } else if (cssPath.startsWith("./")) {
-      cssPath = cssPath.slice(2);
-      cssPath = pathToScript + cssPath;
-    }
+    cssPath = cssPath.startsWith("/")
+      ? pathToScript + cssPath
+      : pathToScript + "/" + cssPath.replace(/^\.\/?/, "");
 
     const cssAlreadyLinked = document.querySelector(`link[href='${cssPath}']`);
 
@@ -50,12 +45,14 @@ export const css = (importMeta, cssPaths) =>
     document.head.appendChild(styleLink);
   });
 
+// Using ES2022 features for private fields
 export default class Component {
+  #states = {};
+  #stateElements = {};
+
   constructor() {
-    this.template = "";
-    this.scripts = null;
-    this.states = {};
-    this._stateElements  = {};
+    this.template = ""; // Public field (set only)
+    this.scripts = null; // Public field (set only)
 
     /**
      * Helper function to validate the template and scripts.
@@ -77,21 +74,27 @@ export default class Component {
     /**
      * Function to manage state and return a state value with a setter.
      * @param {any} initialValue - Initial state value.
-     * @param {string} uniqueElementId - The uniqueElementId for the element tied to this state.
+     * @param {string} elementId - The unique element ID for the element tied to this state.
      * @returns {[any, function]} Current state and a setter function to update the state.
      */
-    this.state = (initialValue, uniqueElementId) => {
+    this.state = (initialValue, elementId) => {
+      let uniqueElementId = `${elementId}-${uniqueId()}`;
+
+      // Ensure unique element ID for states
+      while (Object.hasOwn(this.#states, uniqueElementId)) {
+        uniqueElementId = `${elementId}-${uniqueId()}`;
+      }
+
       let value = initialValue;
 
       // Setter function to update the value and DOM
       const setValue = newValue => {
-
         value = newValue;
 
         /**
          * @type {HTMLElement}
          */
-        const element = this._stateElements[uniqueElementId];
+        const element = this.#stateElements[uniqueElementId];
 
         if (!element) {
           return;
@@ -100,21 +103,21 @@ export default class Component {
         element.textContent = value;
       };
 
-      // Save the initial value and element uniqueElementId
-      this.states[uniqueElementId] = value;
+      // Save the initial value and element uniqueElementId in the private states
+      this.#states[uniqueElementId] = value;
 
       // To be used later to track elements associated with the state
-      return [value, setValue];
+      return [uniqueElementId, value, setValue];
     };
 
     /**
      * Called after rendering to bind elements to states.
      */
     const bindStateElements = () => {
-      Object.keys(this.states).forEach(uniqueElementId => {
-        this._stateElements[uniqueElementId] = document.getElementById(uniqueElementId);
+      Object.keys(this.#states).forEach(uniqueElementId => {
+        this.#stateElements[uniqueElementId] = document.getElementById(uniqueElementId);
 
-        if (!this._stateElements[uniqueElementId]) {
+        if (!this.#stateElements[uniqueElementId]) {
           console.warn(`No element found with unique element id: ${uniqueElementId}`);
         }
       });
