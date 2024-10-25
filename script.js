@@ -1,3 +1,4 @@
+import { Root } from './Component.js';
 import Router from "./Router.js"
 
-document.body.innerHTML = new Router();
+new Root({destination: Router}).render();
