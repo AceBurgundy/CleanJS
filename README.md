@@ -52,6 +52,7 @@ import Home from "./Pages/Home/Home.js";
 export default class Router extends Component {
   constructor() {
     super();
+
     this.template = /* html */`
       <nav id="navigation">
         ${new Redirect({
