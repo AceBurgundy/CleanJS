@@ -28,14 +28,21 @@ While not strictly necessary, you can install Lite SPA JS locally for developmen
 
 **2. Include a Script:**
 
-Calling new Root(destination: <Component>) will render that component to the screen:
+Add a script.js file to your html which will house you initial component to be rendered
 
 ```javascript
-import { Root } from '../Component.js';
-import { Home } from './pages/home/Home.js';
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="./usage/script.js" type="module"></script>
+    <link rel="stylesheet" href="./usage/style.css">
+  </head>
+  <body>
 
-// Renders the Component Home() to the window
-new Root({destination: Home}).render();
+  </body>
+</html>
 ```
 
 **3. Create Components:**
@@ -87,7 +94,31 @@ const aboutPageLink = new Redirect({
 /// Will render an achor tag when added to this.template of a component.
 ```
 
-**6. State Management:**
+**Modularization**
+
+Reuse Components inside other Components:
+
+```javascript
+import { Component } from './Component.js';
+import { Header } from './components/Header.js';
+import { Footer } from './components/Footer.js';
+
+export class HomePage extends Component {
+  constructor() {
+    super();
+
+    this.template = /* html */`
+      ${new Header()}
+      <div class="content">
+        <h1>Welcome to the Home Page</h1>
+        <p>This is the main content of the home page.</p>
+      </div>
+      ${new Footer()} `;
+  }
+}
+```
+
+**State Management:**
 
 Implement simple state management components by using this.state:
 
