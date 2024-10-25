@@ -205,7 +205,7 @@ export const css = (importMeta, cssPaths) =>
   });
 
 // Using ES2022 features for private fields
-export default class Component {
+export class Component {
   #states = {};
   #stateElements = {};
 

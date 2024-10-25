@@ -1,10 +1,10 @@
-import Component, { css } from "../../Component.js"
+import { Component, css } from '../../../Component.js';
 
 css(import.meta, [
-  "./styles/About.css"
+  "./styles/about.css"
 ])
 
-export default class About extends Component {
+export class About extends Component {
   constructor() {
     super();
 

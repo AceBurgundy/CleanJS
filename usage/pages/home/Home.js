@@ -1,10 +1,11 @@
-import Component, { css } from "../../Component.js"
+import { Component, Redirect, css } from '../../../Component.js';
+import { About } from '../about/About.js';
 
 css(import.meta, [
-  "./styles/Home.css"
+  "./styles/home.css"
 ])
 
-export default class Home extends Component {
+export class Home extends Component {
   constructor() {
     super();
 
@@ -18,6 +19,17 @@ export default class Home extends Component {
     };
 
     this.template = /* html */`
+      <nav id="navigation">
+        ${
+          new Redirect({
+            destination: About,
+            id: "about-page",
+            path: "/about",
+            attributes: {"class": "nav-item button-primary"},
+            innerHTML: "About"
+          })
+        }
+      </nav>
       <div class="home">
         <h1 class="title">ShockJS</h1>
         <div class="like-section">
@@ -25,6 +37,6 @@ export default class Home extends Component {
           <button id="${likeButton}" class="button-primary like-section__button">Like</button>
         </div>
       </div>
-    `;
+  `;
   }
 }
