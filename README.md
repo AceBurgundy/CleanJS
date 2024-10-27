@@ -1,4 +1,4 @@
-## Lite SPA JS: Simpler Single-Page Applications (Built For Fun)
+## Lite SPA JS: Simpler Single-Page Applications (Built For Fun) [View Website](https://lite-spa-js.vercel.app/)
 
 This is Lite SPA JS, a lightweight JavaScript library designed to make building single-page applications (SPAs) easier and more enjoyable. It focuses on a unified approach, combining HTML and JavaScript within a single `Component` class.
 
