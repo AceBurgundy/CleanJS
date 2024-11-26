@@ -21,7 +21,7 @@ For a more enjoyable development experience in VS Code, install the extension, "
 
 * **Overriden CSS:** The css function simply loads css files inside the <head> element to group related css and component together. If used improperly, styles with the same selectors will be overriden just as how it would normally be. This doesn't work like css modules.
 
-  - To allow the page to load just a bit faster and reduce FOUC, call it inside a component. This way css() will load along the component. Calling css() outside a component will load it on the initial page load. Meaning, if all of your css() calls are outside all of your components, all of them will be called on initial page load causing unnecessary delay.
+  - To allow the page to load just a bit faster and reduce FOUC, call it inside a component. This way css() will load along the component. Calling css() outside a component will load it on the initial page load. Meaning, if all of your css() calls are outside all of your components, all of them will be called on the initial page load causing unnecessary delay.
     
 ### Benefits
 
