@@ -7,7 +7,7 @@ This is Lite SPA JS, a lightweight JavaScript library designed to make building 
 
 **VS Code Tip:**
 
-For a more enjoyable development experience in VS Code, install the "Inline HTML" extension. This allows you to write your component templates directly within your JavaScript files, providing a seamless workflow.
+For a more enjoyable development experience in VS Code, install the extension, "Inline HTML". This allows syntax highlighting for you html templates directly within your JavaScript files, providing a seamless workflow.
 
 ### Features
 
