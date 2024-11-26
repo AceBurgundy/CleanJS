@@ -3,7 +3,7 @@
 This is Lite SPA JS, a lightweight JavaScript library designed to make building single-page applications (SPAs) easier and more enjoyable. It focuses on a unified approach, combining HTML and JavaScript within a single `Component` class.
 
 ### For Who
-- Programmers who want to make small websites using React's Component Based Development while still being able to use common html, css and js knowledge. 
+- Programmers who want to make small websites using React's Component Based Development while still be able to utilize their common html, css and javascript knowledge. 
 
 **VS Code Tip:**
 
